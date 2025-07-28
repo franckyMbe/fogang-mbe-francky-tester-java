@@ -38,13 +38,14 @@ public class ParkingService {
                 Date inTime = new Date();
                 Ticket ticket = new Ticket();
                 //ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME)
-                //ticket.setId(ticketID);
+//                ticket.setId(ticketID);
                 ticket.setParkingSpot(parkingSpot);
                 ticket.setVehicleRegNumber(vehicleRegNumber);
                 ticket.setPrice(0);
                 ticket.setInTime(inTime);
                 ticket.setOutTime(null);
                 ticketDAO.saveTicket(ticket);
+                if(ticketDAO.getNbTicket(vehicleRegNumber)>1) System.out.println(" Welcome back! A regular user of our parking lot, you will receive a 5% discount !"); // affichage d'un message de bienvenue aux vehicule regulier
                 System.out.println("Generated Ticket and saved in DB");
                 System.out.println("Please park your vehicle in spot number:"+parkingSpot.getId());
                 System.out.println("Recorded in-time for vehicle number:"+vehicleRegNumber+" is:"+inTime);
@@ -100,10 +101,17 @@ public class ParkingService {
     public void processExitingVehicle() {
         try{
             String vehicleRegNumber = getVehichleRegNumber();
-            Ticket ticket = ticketDAO.getTicket(vehicleRegNumber);
+            Ticket ticket=ticketDAO.getTicket(vehicleRegNumber);
             Date outTime = new Date();
             ticket.setOutTime(outTime);
-            fareCalculatorService.calculateFare(ticket);
+            boolean discount=false;
+            
+            if(ticketDAO.getNbTicket(vehicleRegNumber)>1) {
+            	discount=true;
+            	fareCalculatorService.calculateFare(ticket,discount); // discount ticket
+            }else {
+				fareCalculatorService.calculateFare(ticket);  // normal ticket
+            }
             if(ticketDAO.updateTicket(ticket)) {
                 ParkingSpot parkingSpot = ticket.getParkingSpot();
                 parkingSpot.setAvailable(true);
@@ -117,4 +125,5 @@ public class ParkingService {
             logger.error("Unable to process exiting vehicle",e);
         }
     }
+    
 }

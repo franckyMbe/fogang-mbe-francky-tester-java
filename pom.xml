@@ -59,6 +59,14 @@
             <artifactId>maven-assembly-plugin</artifactId>
             <version>3.0.0</version>
         </dependency>
+        
+		<!-- https://mvnrepository.com/artifact/org.assertj/assertj-core -->
+		<dependency>
+			<groupId>org.assertj</groupId>
+			<artifactId>assertj-core</artifactId>
+			<version>3.27.3</version>
+			<scope>test</scope>
+		</dependency>
     </dependencies>
 
     <build>
@@ -125,6 +133,19 @@
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.5</version>
+				<configuration>
+					<excludes>
+
+						<!--class java exclure de couverture de teste -->
+						<exclude>**/*com/parkit/parkingsystem/dao/</exclude>
+						<exclude>**/*com/parkit/parkingsystem/config/</exclude>
+						<exclude>**/com/parkit/parkingsystem/util/</exclude>
+						<exclude>**/com/parkit/parkingsystem/constants/*Fare.class</exclude>
+						<exclude>**/com/parkit/parkingsystem/constants/*DBConstants.class</exclude>
+						<exclude>**/com/parkit/parkingsystem/service/*InteractiveShell.java</exclude>
+						<exclude>**/com/parkit/parkingsystem/App.java</exclude>
+					</excludes>
+				</configuration>
                 <executions>
                     <execution>
                         <goals>

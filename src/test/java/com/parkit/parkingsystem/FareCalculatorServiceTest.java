@@ -17,12 +17,17 @@ public class FareCalculatorServiceTest {
 
     private static FareCalculatorService fareCalculatorService;
     private Ticket ticket;
+    private static boolean discount;
 
     @BeforeAll
     private static void setUp() {
         fareCalculatorService = new FareCalculatorService();
     }
 
+    @BeforeAll
+    private static void setDiscount() {
+    	discount = false;
+    }
     @BeforeEach
     private void setUpPerTest() {
         ticket = new Ticket();
@@ -34,12 +39,13 @@ public class FareCalculatorServiceTest {
         inTime.setTime( System.currentTimeMillis() - (  60 * 60 * 1000) );
         Date outTime = new Date();
         ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR,false);
-
+        
         ticket.setInTime(inTime);
         ticket.setOutTime(outTime);
         ticket.setParkingSpot(parkingSpot);
         fareCalculatorService.calculateFare(ticket);
         assertEquals(ticket.getPrice(), Fare.CAR_RATE_PER_HOUR);
+ 
     }
 
     @Test
@@ -124,4 +130,78 @@ public class FareCalculatorServiceTest {
         assertEquals( (24 * Fare.CAR_RATE_PER_HOUR) , ticket.getPrice());
     }
 
+    
+    
+
+    /*
+     * test de parking gratuit pour les vehicules de moins ou egale a 30 minutes
+     */
+    
+    
+    
+    @Test
+    public void calculateFareCarWithLessThan30minutesParkingTime() {
+        Date inTime = new Date();
+        inTime.setTime( System.currentTimeMillis() - (30*60*1000) );//30 min parking time should give 24 * parking fare per hour
+        Date outTime = new Date();
+        ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR,false);
+
+        ticket.setInTime(inTime);
+        ticket.setOutTime(outTime);
+        ticket.setParkingSpot(parkingSpot);
+        fareCalculatorService.calculateFare(ticket);
+        assertEquals( 0 * Fare.CAR_RATE_PER_HOUR, ticket.getPrice());
+    }
+    
+    @Test
+    public void calculateFareBikeWithLessThan30minutesParkingTime() {
+        Date inTime = new Date();
+        inTime.setTime( System.currentTimeMillis() - (30*60*1000) );//30 min parking time should give 24 * parking fare per hour
+        Date outTime = new Date();
+        ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.BIKE,false);
+
+        ticket.setInTime(inTime);
+        ticket.setOutTime(outTime);
+        ticket.setParkingSpot(parkingSpot);
+        fareCalculatorService.calculateFare(ticket);
+        assertEquals( 0 * Fare.CAR_RATE_PER_HOUR, ticket.getPrice());
+    }
+    
+    
+    /*
+     *  Testes sur les  5% de remises pour les utilisateur recurrent 
+     */
+    
+    
+    // cas d'une voiture  
+    @Test
+    public void calculateFareCarWithDiscount() {
+    	Date intTime = new Date();
+    	intTime.setTime(System.currentTimeMillis() - (50*60*1000));// heure d'entree 
+    	Date outTime = new Date();
+    	ParkingSpot parkingSpot = new ParkingSpot(1,ParkingType.CAR,false);
+        ticket.setInTime(intTime);
+        ticket.setOutTime(outTime);
+        ticket.setParkingSpot(parkingSpot);
+        fareCalculatorService.calculateFare(ticket,discount=true);   
+        //                    |prix normale a payer          | moins | 5% du prix initiale du ticket
+        double ticketDiscount= ((50.0/60) * Fare.CAR_RATE_PER_HOUR*0.95);
+        assertEquals(ticketDiscount, ticket.getPrice());
+    }
+    
+	// cas d'moto
+    @Test
+    public void calculateFareBikeWithDiscount() {
+    	Date intTime = new Date();
+    	intTime.setTime(System.currentTimeMillis() - (50*60*1000));// heure d'entree 
+    	Date outTime = new Date();
+    	ParkingSpot parkingSpot = new ParkingSpot(1,ParkingType.BIKE,false);
+        ticket.setInTime(intTime);
+        ticket.setOutTime(outTime);
+        ticket.setParkingSpot(parkingSpot);
+        fareCalculatorService.calculateFare(ticket,discount=true); 
+        //ticket de reduction =|prix normale a payer          | moins | 5% du prix initiale du ticket
+        double ticketDiscount=((50.0/60) * Fare.BIKE_RATE_PER_HOUR*0.95);
+        assertEquals(ticketDiscount, ticket.getPrice());
+    }
 }
