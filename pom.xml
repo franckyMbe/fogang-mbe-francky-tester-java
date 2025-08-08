@@ -142,8 +142,8 @@
 						<exclude>**/com/parkit/parkingsystem/util/</exclude>
 						<exclude>**/com/parkit/parkingsystem/constants/*Fare.class</exclude>
 						<exclude>**/com/parkit/parkingsystem/constants/*DBConstants.class</exclude>
-						<exclude>**/com/parkit/parkingsystem/service/*InteractiveShell.java</exclude>
-						<exclude>**/com/parkit/parkingsystem/App.java</exclude>
+						<exclude>com/parkit/parkingsystem/service/InteractiveShell.class</exclude>
+						<exclude>com/parkit/parkingsystem/App.class</exclude>
 					</excludes>
 				</configuration>
                 <executions>

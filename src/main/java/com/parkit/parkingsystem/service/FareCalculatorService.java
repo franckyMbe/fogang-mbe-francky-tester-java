@@ -1,7 +1,5 @@
 package com.parkit.parkingsystem.service;
 
-import java.util.Date;
-
 import com.parkit.parkingsystem.constants.Fare;
 import com.parkit.parkingsystem.model.Ticket;
 
@@ -9,18 +7,19 @@ public class FareCalculatorService {
 	
 	
 	/*
-	 * implementation de la fonctionnalité de parking gratuite pour les duree de moins de 30 minute 
+	 * implementation of the free parking feature for durations of less than 30 minutes 
 	 */
 	
-	public void freeParkingService(double temps, Ticket ticket) {
+	private void freeParkingService(double temps, Ticket ticket) {
 		
 		if(temps<=(30.0/60)) ticket.setPrice(0); // initialisation du prix du ticket a zero 
-		
+		temps=0;
 	}
 	
-	// ticket de reduction pour les vehicule recurrent 
-	
-	public void priceReduction(double price,Ticket ticket,boolean discount) {
+    /*
+	 *ticket de reduction pour les vehicule recurrent 
+	 */
+	private void priceReduction(double price,Ticket ticket,boolean discount) {
 		if (discount == true) {
 			System.out.println("5% discount applied on ticket!");
 			double newPrice = (price*(0.95));
@@ -46,7 +45,7 @@ public class FareCalculatorService {
         switch (ticket.getParkingSpot().getParkingType()){
             case CAR: {
                 ticket.setPrice(duration * Fare.CAR_RATE_PER_HOUR);
-                freeParkingService(duration, ticket);             // 30 minute de parking gratuit pour les voitures
+                freeParkingService(duration, ticket);               // 30 minute de parking gratuit pour les voitures
                 priceReduction(ticket.getPrice(), ticket,discount); //  reduction du prix de 5%
                 break;
             }

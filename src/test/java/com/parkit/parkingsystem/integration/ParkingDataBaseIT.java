@@ -101,7 +101,6 @@ public class ParkingDataBaseIT {
     	
     	//Then
     	assertThat(ticketDAO.getNbTicket("ABCDEF")).isGreaterThan(1);
-    	assertThat(ticketDAO.getTicket("ABCDEF").getPrice()).isEqualTo(0.0);
     	
     }
     

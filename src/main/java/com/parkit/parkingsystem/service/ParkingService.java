@@ -110,7 +110,7 @@ public class ParkingService {
             	discount=true;
             	fareCalculatorService.calculateFare(ticket,discount); // discount ticket
             }else {
-				fareCalculatorService.calculateFare(ticket);  // normal ticket
+				fareCalculatorService.calculateFare(ticket,discount);  // normal ticket
             }
             if(ticketDAO.updateTicket(ticket)) {
                 ParkingSpot parkingSpot = ticket.getParkingSpot();
